@@ -41,7 +41,7 @@ const MyProjects = () => {
                 {/*desktop like mini preview */}
                 <div className='relative w-full h-40 bg-gray-900 overflow-hidden border-b border-gray-800'>
               {project.current_code ? (
-                <iframe srcDoc={project.current_code} className='absolute top-0 left-0 w-[1200px] h-[800px] origin-top-left pointer-events-none' sandbox='allow-scripts allow-same-origin' style={{transform:'scale(0.25)'}} />
+                <iframe srcDoc={project.current_code} className='absolute top-0 left-0 w-300 h-200 origin-top-left pointer-events-none' sandbox='allow-scripts allow-same-origin' style={{transform:'scale(0.25)'}} />
               ):(
                 <div className='flex items-center justify-center h-full text-gray-500'>
                   <p>no preview</p>
