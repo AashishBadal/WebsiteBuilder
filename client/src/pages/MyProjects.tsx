@@ -31,7 +31,7 @@ const MyProjects = () => {
         </div>):projects.length > 0 ?(
           <div className='py-10 min-h-[80vh]'>
             <div className='flex items-center justify-between mb-12'>
-              <h1 className='text-2xl font-medium text-white'>My Projects</h1>
+              <h1 className='text-2xl font-medium text-white'>My Project</h1>
               <button onClick={()=>{navigate('/')}} className='flex items-center gap-2 text-white px-3 sm:px-6 py-1 sm:py-2 rounded bg-linear-to-br from-indigo-500 to-indigo-600 hover:opacity-90 active:scale-95 transition-all'><PlusIcon size={18} />Create New</button>
             </div>
 
