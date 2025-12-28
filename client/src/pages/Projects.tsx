@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { dummyConversations, dummyProjects } from '../assets/assets'
 import type { Project } from '../types'
+import Sidebar from '../components/Sidebar'
 
 const Projects = () => {
   const { projectId } = useParams()
@@ -82,6 +83,11 @@ const Projects = () => {
           </button>
         </div>
 
+      </div>
+
+      <div className='flex flex-1 overflow-auto'>
+              <Sidebar isMenuOpen={isMenuOpen} project={project} setProject={(p)=>setProject(p) }isGenerating={isGenerating} setIsGenerating={setIsGenerating}/>
+              <div className='flex-1 p-2 pl-0'>project preview</div>
       </div>
 
     </div>
