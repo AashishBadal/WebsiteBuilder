@@ -1,7 +1,7 @@
 import { ArrowBigDownDash, Eye, EyeOff, Fullscreen, Laptop, Loader2Icon, MessageSquareIcon, Save, Smartphone, Tablet, X } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { dummyConversations, dummyProjects } from '../assets/assets'
+import { dummyConversations, dummyProjects, dummyVersion } from '../assets/assets'
 import type { Project } from '../types'
 import Sidebar from '../components/Sidebar'
 
@@ -18,7 +18,7 @@ const Projects = () => {
     const project = dummyProjects.find(project => project.id === projectId)
     setTimeout(() => {
       if (project) {
-        setProject({ ...project, conversation: dummyConversations });
+        setProject({ ...project, conversation: dummyConversations,versions:dummyVersion });
         setLoading(false)
         setIsGenerating(project.current_code ? false : true)
       }
