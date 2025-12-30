@@ -1,5 +1,5 @@
 import { Divide } from "lucide-react";
-import { forwardRef, useEffect, useRef, useState } from "react"
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react"
 import { iframeScript } from "../assets/assets";
 import EditorPanel from "./EditorPanel";
 
@@ -25,6 +25,19 @@ const ProjectPreview = forwardRef<ProjectPreviewRef,ProjectPreviewProps>(({proje
         tablet:'w-[768]',
         desktop:'w-full'
     }
+
+    useImperativeHandle(ref,()=>({
+        getCode :()=>{
+            const doc = iframeRef.current?.contentDocument;
+            if(!doc) return undefined;
+            //1.Remove our selection class / attributes /outline from all elements
+            doc.querySelectorAll('.ai-selected-element,[data-ai-selected]').forEach((el)=>{
+                el.classList.remove('ai-selected-element')
+                el.removeAttribute('data-ai-selected');
+                (el as HTMLElement).style.outline = '';
+            })
+        }
+    }))
 
     useEffect(()=>{
         const handleMessage = (event:MessageEvent)=>{
