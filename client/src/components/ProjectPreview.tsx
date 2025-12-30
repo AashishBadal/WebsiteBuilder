@@ -5,7 +5,7 @@ import { iframeScript } from "../assets/assets";
 interface ProjectPreviewProps{
     project : Project;
     isGenerating :boolean;
-    device?:'phone' | 'table' | 'desktop';
+    device?:'phone' | 'tablet' | 'desktop';
     showEditorPanel?:boolean;
 }
 
@@ -16,6 +16,12 @@ export interface ProjectPreviewRef{
 const ProjectPreview = forwardRef<ProjectPreviewRef,ProjectPreviewProps>(({project,isGenerating,device='desktop',showEditorPanel=true},ref) => {
 
     const iframeRef = useRef<HTMLIFrameElement>(null)
+
+    const resolutions = {
+        phone:'w-[412px]',
+        tablet:'w-[768]',
+        desktop:'w-full'
+    }
 
     const injectPreview = (html:string) =>{
         if(!html) return ''
@@ -35,7 +41,7 @@ const ProjectPreview = forwardRef<ProjectPreviewRef,ProjectPreviewProps>(({proje
             project.current_code ? (
             <>
             <iframe ref={iframeRef}
-            srcDoc={injectPreview(project.current_code)} className={`h-full max-sm:w-full `} />
+            srcDoc={injectPreview(project.current_code)} className={`h-full max-sm:w-full ${resolutions[device]} mx-auto transition-all`} />
             </>
             ) : isGenerating && (
                 <div>loadinng</div>
