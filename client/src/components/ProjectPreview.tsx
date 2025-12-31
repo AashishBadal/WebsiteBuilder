@@ -36,6 +36,17 @@ const ProjectPreview = forwardRef<ProjectPreviewRef,ProjectPreviewProps>(({proje
                 el.removeAttribute('data-ai-selected');
                 (el as HTMLElement).style.outline = '';
             })
+
+            //Remove injected style + script from the document
+            const previewStyle = doc.getElementById('ai-preview-style');
+            if(previewStyle) previewStyle.remove();
+
+            const previewScript = doc.getElementById('ai-preview-script');
+            if(previewScript) previewScript.remove();
+
+            //serialize clean html
+            const html = doc.documentElement.outerHTML;
+            return html;
         }
     }))
 
