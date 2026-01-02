@@ -92,36 +92,36 @@ export const createUserProject = async (req: Request, res: Response) => {
 Return ONLY the enhanced prompt, nothing else. Make it detailed but concise (2-3 paragraphs max).`,
         },
         {
-            role:'user',
-            content:initial_prompt
-        }
+          role: "user",
+          content: initial_prompt,
+        },
       ],
     });
 
     const enhancedPrompt = promptEnhanceResponse.choices[0].message.content;
 
     await prisma.conversation.create({
-        data:{
-            role:'assistant',
-            content:`I've enhanced your prompt to: "${enhancedPrompt}"`,
-            projectId:project.id
-        }
-    })
+      data: {
+        role: "assistant",
+        content: `I've enhanced your prompt to: "${enhancedPrompt}"`,
+        projectId: project.id,
+      },
+    });
     await prisma.conversation.create({
-        data:{
-            role:'assistant',
-            content:'now generating your website...',
-            projectId:project.id
-        }
-    })
+      data: {
+        role: "assistant",
+        content: "now generating your website...",
+        projectId: project.id,
+      },
+    });
 
     //generate website code
     const codeGenerationResponse = await openai.chat.completions.create({
-        model: "z-ai/glm-4.5-air:free",
-    messages: [
-      {
-        "role": "system",
-        "content": `You are an expert web developer. Create a complete, production-ready, single-page website based on this request: "${enhancedPrompt}"
+      model: "z-ai/glm-4.5-air:free",
+      messages: [
+        {
+          role: "system",
+          content: `You are an expert web developer. Create a complete, production-ready, single-page website based on this request: "${enhancedPrompt}"
 
     CRITICAL REQUIREMENTS:
     - You MUST output valid HTML ONLY. 
@@ -144,34 +144,52 @@ Return ONLY the enhanced prompt, nothing else. Make it detailed but concise (2-3
     3. You MUST NOT include internal thoughts, explanations, analysis, comments, or markdown.
     4. Do NOT include markdown, explanations, notes, or code fences.
 
-    The HTML should be complete and ready to render as-is with Tailwind CSS.`
-      },
-      {role:'user',
-        content:enhancedPrompt || ''
-      }
-    ]
-    })
+    The HTML should be complete and ready to render as-is with Tailwind CSS.`,
+        },
+        { role: "user", content: enhancedPrompt || "" },
+      ],
+    });
 
-    const code = codeGenerationResponse.choices[0].message.content || '';
+    const code = codeGenerationResponse.choices[0].message.content || "";
 
     //create version for the project
     const version = await prisma.version.create({
-        data:{
-            code:code.replace(/```[a-z]*\n?/gi,'')
-            .replace(/```$/g,'')
-            .trim(),
-            description:'Initial version',
-            projectId:project.id
-
-        }
-    })
+      data: {
+        code: code
+          .replace(/```[a-z]*\n?/gi, "")
+          .replace(/```$/g, "")
+          .trim(),
+        description: "Initial version",
+        projectId: project.id,
+      },
+    });
 
     await prisma.conversation.create({
-        data:{role:'assistant',content:'I have created your website! you can now preview it and request any cahnges'}
-    })
+      data: {
+        role: "assistant",
+        content:
+          "I have created your website! you can now preview it and request any changes",
+        projectId: project.id,
+      },
+    });
 
+    await prisma.websiteProject.update({
+      where: { id: project.id },
+      data: {
+        current_code: code
+          .replace(/```[a-z]*\n?/gi, "")
+          .replace(/```$/g, "")
+          .trim(),
+        current_version_index: version.id,
+      },
+    });
   } catch (error: any) {
+    await prisma.user.update({
+      where: { id: userId },
+      data: { credits: { increment: 5 } },
+    });
     console.log(error.code || error.message);
     res.status(500).json({ message: error.message });
   }
 };
+
