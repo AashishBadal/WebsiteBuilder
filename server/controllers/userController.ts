@@ -273,3 +273,10 @@ export const togglePublish = async (req: Request, res: Response) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+//controller function to purchase credits
+export const purchaseCredits  = async (req: Request, res: Response) => {
+  
+};
+
+
